@@ -79,6 +79,10 @@
             color: #374151;
         }
         
+        .input-wrapper {
+            position: relative;
+        }
+        
         .form-group input, .form-group textarea {
             width: 100%;
             padding: 12px;
@@ -97,6 +101,53 @@
         .form-group textarea {
             height: 80px;
             resize: vertical;
+        }
+        
+        .example-text {
+            background: #f3f4f6;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            padding: 8px 12px;
+            margin-top: 5px;
+            font-size: 13px;
+            color: #6b7280;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+        
+        .example-text:hover {
+            background: #e5e7eb;
+            border-color: #9ca3af;
+            color: #374151;
+        }
+        
+        .example-text::before {
+            content: "📋 ";
+        }
+        
+        .example-text::after {
+            content: " (クリックでコピー)";
+            font-size: 11px;
+            opacity: 0.7;
+        }
+        
+        .copy-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #10b981;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .copy-notification.show {
+            transform: translateX(0);
         }
         
         .button-group {
@@ -202,57 +253,68 @@
                 
                 <div class="form-group">
                     <label for="project">案件</label>
-                    <input type="text" id="project" placeholder="例：電子チケットのメールサポート・電話サポート業務">
+                    <input type="text" id="project" placeholder="案件名を入力してください">
+                    <div class="example-text" onclick="copyExample(this, 'project')">電子チケットのメールサポート・電話サポート業務</div>
                 </div>
                 
                 <div class="form-group">
                     <label for="content">業務内容</label>
-                    <textarea id="content" placeholder="例：某大手チケット会社の電子チケットのサポート業務　※8割メールサポート"></textarea>
+                    <textarea id="content" placeholder="業務内容の詳細を入力してください"></textarea>
+                    <div class="example-text" onclick="copyExample(this, 'content')">某大手チケット会社の電子チケットのサポート業務　※8割メールサポート</div>
                 </div>
                 
                 <div class="form-group">
                     <label for="hours">時間</label>
-                    <input type="text" id="hours" placeholder="例：176時間以上">
+                    <input type="text" id="hours" placeholder="稼働時間を入力してください">
+                    <div class="example-text" onclick="copyExample(this, 'hours')">176時間以上</div>
                 </div>
                 
                 <div class="form-group">
                     <label for="holiday">休み</label>
-                    <input type="text" id="holiday" placeholder="例：シフト制">
+                    <input type="text" id="holiday" placeholder="休日体系を入力してください">
+                    <div class="example-text" onclick="copyExample(this, 'holiday')">シフト制</div>
                 </div>
                 
                 <div class="form-group">
                     <label for="worktime">時間帯</label>
-                    <input type="text" id="worktime" placeholder="例：10:30〜19:30（実働8時間、休憩1時間）">
+                    <input type="text" id="worktime" placeholder="勤務時間帯を入力してください">
+                    <div class="example-text" onclick="copyExample(this, 'worktime')">10:30〜19:30（実働8時間、休憩1時間）</div>
                 </div>
                 
                 <div class="form-group">
                     <label for="rate">単価</label>
-                    <input type="text" id="rate" placeholder="例：時間単価（1,900円）">
+                    <input type="text" id="rate" placeholder="単価情報を入力してください">
+                    <div class="example-text" onclick="copyExample(this, 'rate')">時間単価（1,900円）</div>
                 </div>
                 
                 <div class="form-group">
                     <label for="transport">交通費</label>
-                    <input type="text" id="transport" placeholder="例：込み">
+                    <input type="text" id="transport" placeholder="交通費の扱いを入力してください">
+                    <div class="example-text" onclick="copyExample(this, 'transport')">込み</div>
                 </div>
                 
                 <div class="form-group">
                     <label for="location">稼働場所</label>
-                    <input type="text" id="location" placeholder="例：池袋　※一定期間大崎での稼働の可能性有">
+                    <input type="text" id="location" placeholder="勤務場所を入力してください">
+                    <div class="example-text" onclick="copyExample(this, 'location')">池袋　※一定期間大崎での稼働の可能性有</div>
                 </div>
                 
                 <div class="form-group">
                     <label for="interview">採用フロー</label>
-                    <textarea id="interview" placeholder="例：2回 web弊社1回(10分程度)+エンドクライアントとの面談1回（30分程度）※webになる可能性もあり"></textarea>
+                    <textarea id="interview" placeholder="面接プロセスを入力してください"></textarea>
+                    <div class="example-text" onclick="copyExample(this, 'interview')">2回 web弊社1回(10分程度)+エンドクライアントとの面談1回（30分程度）※webになる可能性もあり</div>
                 </div>
                 
                 <div class="form-group">
                     <label for="contract">契約</label>
-                    <input type="text" id="contract" placeholder="例：業務委託（1ヶ月更新）">
+                    <input type="text" id="contract" placeholder="契約形態を入力してください">
+                    <div class="example-text" onclick="copyExample(this, 'contract')">業務委託（1ヶ月更新）</div>
                 </div>
                 
                 <div class="form-group">
                     <label for="remarks">備考</label>
-                    <textarea id="remarks" placeholder="例：・勤怠や実績不振による即契約終了の可能性あり"></textarea>
+                    <textarea id="remarks" placeholder="その他の注意事項があれば入力してください"></textarea>
+                    <div class="example-text" onclick="copyExample(this, 'remarks')">・勤怠や実績不振による即契約終了の可能性あり</div>
                 </div>
                 
                 <div class="button-group">
@@ -281,7 +343,34 @@
         </div>
     </div>
 
+    <div class="copy-notification" id="copyNotification">
+        📋 例文をコピーしました！
+    </div>
+
     <script>
+        // 例文をコピーしてフィールドに入力
+        function copyExample(element, fieldId) {
+            const text = element.textContent.replace('📋 ', '').replace(' (クリックでコピー)', '');
+            const field = document.getElementById(fieldId);
+            field.value = text;
+            field.focus();
+            
+            // コピー通知を表示
+            showCopyNotification();
+            
+            // 自動保存
+            saveToLocalStorage();
+        }
+
+        // コピー通知を表示
+        function showCopyNotification() {
+            const notification = document.getElementById('copyNotification');
+            notification.classList.add('show');
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 2000);
+        }
+
         // 入力内容を自動保存
         function saveToLocalStorage() {
             const inputs = ['project', 'content', 'hours', 'holiday', 'worktime', 'rate', 'transport', 'location', 'interview', 'contract', 'remarks'];
