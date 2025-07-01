@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>案件票自動生成ツール</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Hiragino Sans', 'ヒラギノ角ゴシック', 'Yu Gothic', 'メイリオ', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(45deg, #4f46e5, #7c3aed);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            padding: 30px;
+        }
+        
+        .input-section, .output-section {
+            background: #f8fafc;
+            padding: 25px;
+            border-radius: 15px;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .section-title {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: #1e293b;
+            border-bottom: 2px solid #4f46e5;
+            padding-bottom: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #374151;
+        }
+        
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .form-group input:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+        
+        .form-group textarea {
+            height: 80px;
+            resize: vertical;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex: 1;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(45deg, #4f46e5, #7c3aed);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(79, 70, 229, 0.3);
+        }
+        
+        .btn-secondary {
+            background: #6b7280;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #4b5563;
+        }
+        
+        .btn-copy {
+            background: #10b981;
+            color: white;
+        }
+        
+        .btn-copy:hover {
+            background: #059669;
+        }
+        
+        .output-box {
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 20px;
+            min-height: 300px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            color: #1f2937;
+        }
+        
+        .placeholder {
+            color: #9ca3af;
+            font-style: italic;
+        }
+        
+        .success-message {
+            background: #d1fae5;
+            border: 1px solid #10b981;
+            color: #065f46;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 20px;
+                padding: 20px;
+            }
+            
+            .header {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 案件票自動生成ツール</h1>
+            <p>業務委託案件の情報を入力するだけで、統一フォーマットの案件票を自動生成します</p>
+        </div>
+        
+        <div class="main-content">
+            <div class="input-section">
+                <h2 class="section-title">📝 案件情報入力</h2>
+                
+                <div class="form-group">
+                    <label for="project">案件</label>
+                    <input type="text" id="project" placeholder="例：電子チケットのメールサポート・電話サポート業務">
+                </div>
+                
+                <div class="form-group">
+                    <label for="content">業務内容</label>
+                    <textarea id="content" placeholder="例：某大手チケット会社の電子チケットのサポート業務　※8割メールサポート"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="hours">時間</label>
+                    <input type="text" id="hours" placeholder="例：176時間以上">
+                </div>
+                
+                <div class="form-group">
+                    <label for="holiday">休み</label>
+                    <input type="text" id="holiday" placeholder="例：シフト制">
+                </div>
+                
+                <div class="form-group">
+                    <label for="worktime">時間帯</label>
+                    <input type="text" id="worktime" placeholder="例：10:30〜19:30（実働8時間、休憩1時間）">
+                </div>
+                
+                <div class="form-group">
+                    <label for="rate">単価</label>
+                    <input type="text" id="rate" placeholder="例：時間単価（1,900円）">
+                </div>
+                
+                <div class="form-group">
+                    <label for="transport">交通費</label>
+                    <input type="text" id="transport" placeholder="例：込み">
+                </div>
+                
+                <div class="form-group">
+                    <label for="location">稼働場所</label>
+                    <input type="text" id="location" placeholder="例：池袋　※一定期間大崎での稼働の可能性有">
+                </div>
+                
+                <div class="form-group">
+                    <label for="interview">採用フロー</label>
+                    <textarea id="interview" placeholder="例：2回 web弊社1回(10分程度)+エンドクライアントとの面談1回（30分程度）※webになる可能性もあり"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="contract">契約</label>
+                    <input type="text" id="contract" placeholder="例：業務委託（1ヶ月更新）">
+                </div>
+                
+                <div class="form-group">
+                    <label for="remarks">備考</label>
+                    <textarea id="remarks" placeholder="例：・勤怠や実績不振による即契約終了の可能性あり"></textarea>
+                </div>
+                
+                <div class="button-group">
+                    <button class="btn btn-primary" onclick="generateTicket()">📋 案件票を作成</button>
+                    <button class="btn btn-secondary" onclick="clearForm()">🗑️ クリア</button>
+                </div>
+            </div>
+            
+            <div class="output-section">
+                <h2 class="section-title">📄 生成された案件票</h2>
+                
+                <div class="success-message" id="successMessage">
+                    ✅ 案件票が正常に生成されました！
+                </div>
+                
+                <div class="button-group">
+                    <button class="btn btn-copy" onclick="copyToClipboard()">📄 コピー</button>
+                </div>
+                
+                <div class="output-box" id="output">
+                    <div class="placeholder">左側のフォームに入力して「案件票を作成」ボタンを押すと、ここに統一フォーマットの案件票が表示されます。
+
+生成された案件票は「コピー」ボタンでクリップボードにコピーできます。</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 入力内容を自動保存
+        function saveToLocalStorage() {
+            const inputs = ['project', 'content', 'hours', 'holiday', 'worktime', 'rate', 'transport', 'location', 'interview', 'contract', 'remarks'];
+            inputs.forEach(id => {
+                const element = document.getElementById(id);
+                localStorage.setItem(id, element.value);
+            });
+        }
+
+        // 保存された内容を復元
+        function loadFromLocalStorage() {
+            const inputs = ['project', 'content', 'hours', 'holiday', 'worktime', 'rate', 'transport', 'location', 'interview', 'contract', 'remarks'];
+            inputs.forEach(id => {
+                const saved = localStorage.getItem(id);
+                if (saved) {
+                    document.getElementById(id).value = saved;
+                }
+            });
+        }
+
+        // 案件票生成
+        function generateTicket() {
+            const project = document.getElementById('project').value || '';
+            const content = document.getElementById('content').value || '';
+            const hours = document.getElementById('hours').value || '';
+            const holiday = document.getElementById('holiday').value || '';
+            const worktime = document.getElementById('worktime').value || '';
+            const rate = document.getElementById('rate').value || '';
+            const transport = document.getElementById('transport').value || '';
+            const location = document.getElementById('location').value || '';
+            const interview = document.getElementById('interview').value || '';
+            const contract = document.getElementById('contract').value || '';
+            const remarks = document.getElementById('remarks').value || '';
+
+            let ticket = '';
+            if (project) ticket += `■案件：${project}\n`;
+            if (content) ticket += `■業務内容：${content}\n`;
+            if (hours) ticket += `■時間：${hours}\n`;
+            if (holiday) ticket += `■休み：${holiday}\n`;
+            if (worktime) ticket += `■時間帯：${worktime}\n`;
+            if (rate) ticket += `■単価：${rate}\n`;
+            if (transport) ticket += `■交通費：${transport}\n`;
+            if (location) ticket += `■稼働場所：${location}\n`;
+            if (interview) ticket += `■採用フロー：${interview}\n`;
+            if (contract) ticket += `■契約：${contract}\n`;
+            if (remarks) ticket += `■備考：\n${remarks}`;
+
+            document.getElementById('output').textContent = ticket || '入力内容がありません。左側のフォームに情報を入力してください。';
+            
+            // 成功メッセージ表示
+            if (ticket) {
+                const successMessage = document.getElementById('successMessage');
+                successMessage.style.display = 'block';
+                setTimeout(() => {
+                    successMessage.style.display = 'none';
+                }, 3000);
+            }
+
+            saveToLocalStorage();
+        }
+
+        // クリップボードにコピー
+        function copyToClipboard() {
+            const output = document.getElementById('output');
+            const text = output.textContent;
+            
+            if (text && !text.includes('入力内容がありません')) {
+                navigator.clipboard.writeText(text).then(() => {
+                    alert('📋 案件票をクリップボードにコピーしました！');
+                }).catch(() => {
+                    // フォールバック
+                    const textArea = document.createElement('textarea');
+                    textArea.value = text;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                    alert('📋 案件票をクリップボードにコピーしました！');
+                });
+            } else {
+                alert('⚠️ コピーする内容がありません。まず案件票を作成してください。');
+            }
+        }
+
+        // フォームクリア
+        function clearForm() {
+            if (confirm('🗑️ 入力内容をすべてクリアしますか？')) {
+                const inputs = ['project', 'content', 'hours', 'holiday', 'worktime', 'rate', 'transport', 'location', 'interview', 'contract', 'remarks'];
+                inputs.forEach(id => {
+                    document.getElementById(id).value = '';
+                    localStorage.removeItem(id);
+                });
+                document.getElementById('output').innerHTML = '<div class="placeholder">左側のフォームに入力して「案件票を作成」ボタンを押すと、ここに統一フォーマットの案件票が表示されます。\n\n生成された案件票は「コピー」ボタンでクリップボードにコピーできます。</div>';
+            }
+        }
+
+        // 入力時の自動保存
+        document.addEventListener('DOMContentLoaded', function() {
+            loadFromLocalStorage();
+            
+            const inputs = document.querySelectorAll('input, textarea');
+            inputs.forEach(input => {
+                input.addEventListener('input', saveToLocalStorage);
+            });
+        });
+    </script>
+</body>
+</html>
