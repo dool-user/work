@@ -267,6 +267,24 @@
                 </div>
                 
                 <div class="form-group">
+                    <label for="slots">枠数</label>
+                    <input type="text" id="slots" placeholder="募集人数・枠数を入力してください">
+                    <div class="example-text" onclick="copyExample(this, 'slots')">2名</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="skills">必須スキル</label>
+                    <textarea id="skills" placeholder="必須スキルを入力してください"></textarea>
+                    <div class="example-text" onclick="copyExample(this, 'skills')">・カスタマーサポート経験1年以上\n・基本的なPCスキル（Excel、メール対応）</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="startdate">開始日</label>
+                    <input type="text" id="startdate" placeholder="開始予定日を入力してください">
+                    <div class="example-text" onclick="copyExample(this, 'startdate')">2026年3月1日〜（応相談）</div>
+                </div>
+                
+                <div class="form-group">
                     <label for="hours">時間</label>
                     <input type="text" id="hours" placeholder="稼働時間を入力してください">
                     <div class="example-text" onclick="copyExample(this, 'hours')">176時間以上</div>
@@ -281,13 +299,13 @@
                 <div class="form-group">
                     <label for="worktime">時間帯</label>
                     <input type="text" id="worktime" placeholder="勤務時間帯を入力してください">
-                    <div class="example-text" onclick="copyExample(this, 'worktime')">10:30〜19:30（実働8時間、休憩1時間）</div>
+                    <div class="example-text" onclick="copyExample(this, 'worktime')">10:30〜19:30(実働8時間、休憩1時間)</div>
                 </div>
                 
                 <div class="form-group">
                     <label for="rate">単価</label>
                     <input type="text" id="rate" placeholder="単価情報を入力してください">
-                    <div class="example-text" onclick="copyExample(this, 'rate')">時間単価（1,900円）</div>
+                    <div class="example-text" onclick="copyExample(this, 'rate')">時間単価(1,900円)</div>
                 </div>
                 
                 <div class="form-group">
@@ -305,13 +323,13 @@
                 <div class="form-group">
                     <label for="interview">採用フロー</label>
                     <textarea id="interview" placeholder="面接プロセスを入力してください"></textarea>
-                    <div class="example-text" onclick="copyExample(this, 'interview')">2回 web弊社1回(10分程度)+エンドクライアントとの面談1回（30分程度）※webになる可能性もあり</div>
+                    <div class="example-text" onclick="copyExample(this, 'interview')">2回 web弊社1回(10分程度)+エンドクライアントとの面談1回(30分程度)※webになる可能性もあり</div>
                 </div>
                 
                 <div class="form-group">
                     <label for="contract">契約</label>
                     <input type="text" id="contract" placeholder="契約形態を入力してください">
-                    <div class="example-text" onclick="copyExample(this, 'contract')">業務委託（1ヶ月更新）</div>
+                    <div class="example-text" onclick="copyExample(this, 'contract')">業務委託(1ヶ月更新)</div>
                 </div>
                 
                 <div class="form-group">
@@ -330,7 +348,7 @@
                 <h2 class="section-title">📄 生成された案件票</h2>
                 
                 <div class="success-message" id="successMessage">
-                    ✅ 案件票が正常に生成されました！
+                    ✅ 案件票が正常に生成されました!
                 </div>
                 
                 <div class="button-group">
@@ -347,7 +365,7 @@
     </div>
 
     <div class="copy-notification" id="copyNotification">
-        📋 例文をコピーしました！
+        📋 例文をコピーしました!
     </div>
 
     <script>
@@ -376,7 +394,7 @@
 
         // 入力内容を自動保存
         function saveToLocalStorage() {
-            const inputs = ['project', 'content', 'hours', 'holiday', 'worktime', 'rate', 'transport', 'location', 'interview', 'contract', 'remarks'];
+            const inputs = ['project', 'content', 'slots', 'skills', 'startdate', 'hours', 'holiday', 'worktime', 'rate', 'transport', 'location', 'interview', 'contract', 'remarks'];
             inputs.forEach(id => {
                 const element = document.getElementById(id);
                 localStorage.setItem(id, element.value);
@@ -385,7 +403,7 @@
 
         // 保存された内容を復元
         function loadFromLocalStorage() {
-            const inputs = ['project', 'content', 'hours', 'holiday', 'worktime', 'rate', 'transport', 'location', 'interview', 'contract', 'remarks'];
+            const inputs = ['project', 'content', 'slots', 'skills', 'startdate', 'hours', 'holiday', 'worktime', 'rate', 'transport', 'location', 'interview', 'contract', 'remarks'];
             inputs.forEach(id => {
                 const saved = localStorage.getItem(id);
                 if (saved) {
@@ -398,6 +416,9 @@
         function generateTicket() {
             const project = document.getElementById('project').value || '';
             const content = document.getElementById('content').value || '';
+            const slots = document.getElementById('slots').value || '';
+            const skills = document.getElementById('skills').value || '';
+            const startdate = document.getElementById('startdate').value || '';
             const hours = document.getElementById('hours').value || '';
             const holiday = document.getElementById('holiday').value || '';
             const worktime = document.getElementById('worktime').value || '';
@@ -409,17 +430,20 @@
             const remarks = document.getElementById('remarks').value || '';
 
             let ticket = '';
-            if (project) ticket += `■案件：${project}\n`;
-            if (content) ticket += `■業務内容：${content}\n`;
-            if (hours) ticket += `■時間：${hours}\n`;
-            if (holiday) ticket += `■休み：${holiday}\n`;
-            if (worktime) ticket += `■時間帯：${worktime}\n`;
-            if (rate) ticket += `■単価：${rate}\n`;
-            if (transport) ticket += `■交通費：${transport}\n`;
-            if (location) ticket += `■稼働場所：${location}\n`;
-            if (interview) ticket += `■採用フロー：${interview}\n`;
-            if (contract) ticket += `■契約：${contract}\n`;
-            if (remarks) ticket += `■備考：\n${remarks}`;
+            if (project) ticket += `■案件:${project}\n`;
+            if (content) ticket += `■業務内容:${content}\n`;
+            if (slots) ticket += `■枠数:${slots}\n`;
+            if (skills) ticket += `■必須スキル:\n${skills}\n`;
+            if (startdate) ticket += `■開始日:${startdate}\n`;
+            if (hours) ticket += `■時間:${hours}\n`;
+            if (holiday) ticket += `■休み:${holiday}\n`;
+            if (worktime) ticket += `■時間帯:${worktime}\n`;
+            if (rate) ticket += `■単価:${rate}\n`;
+            if (transport) ticket += `■交通費:${transport}\n`;
+            if (location) ticket += `■稼働場所:${location}\n`;
+            if (interview) ticket += `■採用フロー:${interview}\n`;
+            if (contract) ticket += `■契約:${contract}\n`;
+            if (remarks) ticket += `■備考:\n${remarks}`;
 
             document.getElementById('output').textContent = ticket || '入力内容がありません。左側のフォームに情報を入力してください。';
             
@@ -442,7 +466,7 @@
             
             if (text && !text.includes('入力内容がありません')) {
                 navigator.clipboard.writeText(text).then(() => {
-                    alert('📋 案件票をクリップボードにコピーしました！');
+                    alert('📋 案件票をクリップボードにコピーしました!');
                 }).catch(() => {
                     // フォールバック
                     const textArea = document.createElement('textarea');
@@ -451,7 +475,7 @@
                     textArea.select();
                     document.execCommand('copy');
                     document.body.removeChild(textArea);
-                    alert('📋 案件票をクリップボードにコピーしました！');
+                    alert('📋 案件票をクリップボードにコピーしました!');
                 });
             } else {
                 alert('⚠️ コピーする内容がありません。まず案件票を作成してください。');
@@ -460,8 +484,8 @@
 
         // フォームクリア
         function clearForm() {
-            if (confirm('🗑️ 入力内容をすべてクリアしますか？')) {
-                const inputs = ['project', 'content', 'hours', 'holiday', 'worktime', 'rate', 'transport', 'location', 'interview', 'contract', 'remarks'];
+            if (confirm('🗑️ 入力内容をすべてクリアしますか?')) {
+                const inputs = ['project', 'content', 'slots', 'skills', 'startdate', 'hours', 'holiday', 'worktime', 'rate', 'transport', 'location', 'interview', 'contract', 'remarks'];
                 inputs.forEach(id => {
                     document.getElementById(id).value = '';
                     localStorage.removeItem(id);
